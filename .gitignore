@@ -1,0 +1,10 @@
+target/
+preferences.json
+.vscode
+/dist
+/wasmedge
+/WasmEdge*
+.DS_Store
+ignored/
+.claude
+/.idea

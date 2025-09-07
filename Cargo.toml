@@ -1,0 +1,190 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "moly-runner",
+    "moly-kit",
+    "moly-mini",
+    "moly-sync",
+]
+exclude = ["packaging/before-packaging-command"]
+
+[package]
+name = "moly"
+version = "0.2.1"
+edition = "2024"
+rust-version = "1.85"                                                 ## required by cargo-packager
+description = "Desktop app for downloading and chatting with AI LLMs"
+
+## Rename the binary to `_moly_app` to avoid naming conflicts
+## with the `moly` binary defined by the `moly-runner` crate.
+[[bin]]
+name = "_moly_app"
+path = "src/main.rs"
+
+
+[dependencies]
+moly-protocol = { git = "https://github.com/moxin-org/moly-server", package = "moly-protocol" }
+moly-kit = { path = "./moly-kit", features = ["full"] }
+moly-sync = { path = "./moly-sync"}
+makepad-widgets = { git = "https://github.com/wyeworks/makepad", branch = "moly" }
+makepad-code-editor = { git = "https://github.com/wyeworks/makepad", branch = "moly" }
+unicode-segmentation = "1.10.1"
+anyhow = "1.0"
+serde_json = "1.0"
+serde = { version = "1.0.197", features = ["derive"] }
+chrono = "0.4"
+url = "2.5.4"
+futures = "0.3.31"
+indexmap = { version = "2.0", features = ["serde"] }
+reqwest = { version = "0.12.12", features = ["json", "stream", "rustls-tls"], default-features = false }
+robius-open = { git = "https://github.com/project-robius/robius" }
+
+robius-url-handler = { git = "https://github.com/project-robius/robius-url-handler" }
+log = "0.4"
+env_logger = "0.11"
+cfg-if = "1.0.0"
+uuid = { version = "1.18.0", features = ["js", "v7"] }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "signal"] }
+directories = "5.0.1"
+async-fs = "2.1.2"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2.100"
+web-fs = "0.2.6"
+
+[target.'cfg(target_os = "macos")'.dependencies.objc2]
+version = "0.6.0"
+
+[target.'cfg(target_os = "macos")'.dependencies.objc2-app-kit]
+version = "0.3.0"
+default-features = false
+features = [
+    "NSApplication",
+    "NSPasteboard",
+    "NSResponder",
+]
+
+[target.'cfg(target_os = "macos")'.dependencies.objc2-foundation]
+version = "0.3.0"
+default-features = false
+features = [
+    "NSString",
+]
+
+## Configuration for `cargo packager`
+[package.metadata.packager]
+product_name = "Moly"
+identifier = "com.moxin-org.moly"
+category = "Utility"
+authors = ["Moxin Organization <moxin-org@github.com>"]
+publisher = "moxin-org"
+license_file = "LICENSE"
+copyright = "Copyright 2023-2024, Project Robius, Moxin Organization"
+homepage = "https://github.com/moxin-org"
+### Note: there is an 80-character max for each line of the `long_description`.
+long_description = """
+Moly is a desktop app that lets you browse AI Large Language Models (LLMs),
+download them, and run them locally to chat with the models.
+Moly uses the Makepad UI framework (https://github.com/makepad/makepad)
+and Project Robius platform abstractions (https://github.com/project-robius),
+and currently runs on major desktop platforms: macOS and Linux
+(Windows support is coming soon).
+Moly uses the WasmEdge WASM runtime (https://github.com/WasmEdge/WasmEdge)
+to locally run the AI models efficiently across varying hardware.
+"""
+icons = ["./packaging/app_icon128x128.png"]
+out_dir = "./dist"
+## Note: the `moly-runner` crate binary is named `moly`,
+##       while the main `moly` crate binary is named `_moly_app`.
+##       This is to avoid naming conflicts when packaging the binaries,
+##       and also ensures that the `moly-runner` binary is the "main" binary
+##       that gets executed when the user runs "moly" from the command line.
+binaries = [
+    { path = "moly", main = true },
+    { path = "_moly_app", main = false },
+]
+
+## The below command uses cargo-metadata to determine the path of the `makepad_widgets` crate on the host build system,
+## and copies the `makepad-widgets/resources` directory to the `./dist/resources/makepad_widgets` directory.
+## We also copy the Moly and MolyKit's `resources/` directories to `./dist/resources/moly` and `./dist/resources/moly_kit respectively`.
+##
+## This is necessary because the `cargo packager` command only supports defining resources at a known path
+## (see the below `resources = [...]` block below),
+## so we need to copy the resources to a known fixed (static) path before packaging,
+## such that cargo-packager can locate them and include them in the final package.
+before-packaging-command = """
+cargo run --manifest-path packaging/before-packaging-command/Cargo.toml before-packaging
+"""
+
+## See the above paragraph comments for more info on how we create/populate the below `src` directories.
+resources = [
+    { src = "./dist/resources/makepad_widgets", target = "makepad_widgets" },
+    { src = "./dist/resources/makepad_fonts_chinese_bold", target = "makepad_fonts_chinese_bold" },
+    { src = "./dist/resources/makepad_fonts_chinese_bold_2", target = "makepad_fonts_chinese_bold_2" },
+    { src = "./dist/resources/makepad_fonts_chinese_regular", target = "makepad_fonts_chinese_regular" },
+    { src = "./dist/resources/makepad_fonts_chinese_regular_2", target = "makepad_fonts_chinese_regular_2" },
+    { src = "./dist/resources/makepad_fonts_emoji", target = "makepad_fonts_emoji" },
+    { src = "./dist/resources/moly", target = "moly" },
+    { src = "./dist/resources/moly_kit", target = "moly_kit" },
+    
+]
+
+## We then build the entire Moly project and set the `MAKEPAD_PACKAGE_DIR` env var to the proper value.
+## * For macOS app bundles, this should be set to `../Resources`.
+##   This only works because the `moly-runner` binary sets the current working directory
+##   to the directory where the binary is located, which is `Moly.app/Contents/MacOS/`.
+##   (See the `run_moly` function in `moly-runner/src/main.rs` for more details.)
+##   In a macOS app bundle, the resources directory is in `Moly.app/Context/Resources/`,
+##   so that's why we set `MAKEPAD_PACKAGE_DIR` to `../Resources` --- it must be relative to the binary's location,
+##   which is up one parent directory.
+## * For Debian `.deb` packages, this should be set to `/usr/lib/<main-binary-name>`,
+##   which is currently `/usr/lib/moly-runner`.
+##   This is the directory in which `dpkg` copies app resource files to when installing the `.deb` package.
+##   * On Linux, we also strip the binaries of unneeded content, as required for Debian packages.
+##   * For Debian and Pacman (still a to-do!) packages, we also auto-generate the list of dependencies required by Moly,
+##     making sure to add `curl` since it is used by an invocation in `moly-runner`.
+##
+before-each-package-command = """
+cargo run --manifest-path packaging/before-packaging-command/Cargo.toml before-each-package
+"""
+
+deep_link_protocols = [
+    { schemes = ["moly"], role = "viewer" }, ## `name` is left as default
+]
+
+[package.metadata.packager.deb]
+depends = "./dist/depends_deb.txt"
+desktop_template = "./packaging/moly.desktop"
+section = "utils"
+
+[package.metadata.packager.macos]
+minimum_system_version = "11.0"
+infoPlistPath = "./packaging/Info.plist"
+
+
+## Configuration for `cargo packager`'s generation of a macOS `.dmg`.
+[package.metadata.packager.dmg]
+background = "./packaging/Moly macOS dmg background.png"
+window_size = { width = 960, height = 540 }
+app_position = { x = 200, y = 250 }
+application_folder_position = { x = 760, y = 250 }
+
+
+## Configuration for `cargo packager`'s generation of a Windows `.exe` setup installer.
+[package.metadata.packager.nsis]
+## See this: <https://nsis.sourceforge.io/Docs/Chapter4.html#varconstant>
+appdata_paths = [
+    "$APPDATA/$PUBLISHER/$PRODUCTNAME",
+    "$LOCALAPPDATA/$PRODUCTNAME",
+]
+
+[profile.small]
+inherits = "release"
+opt-level = 'z'   # Optimize for size
+lto = true        # Enable link-time optimization
+codegen-units = 1 # Reduce number of codegen units to increase optimizations
+panic = 'abort'   # Abort on panic
+strip = true
