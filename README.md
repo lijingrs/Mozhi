@@ -8,7 +8,9 @@
 ## 项目截图
 
 ### Agent管理
+
 <img width="2872" height="1622" alt="image" src="https://github.com/user-attachments/assets/5f21545f-7374-406f-bb66-1c7e145386b5" />
+
 ### 应用中心
 
 <img width="2872" height="1622" alt="image" src="https://github.com/user-attachments/assets/883dc859-f866-4b90-9a1d-6bbb60bd03ed" />
