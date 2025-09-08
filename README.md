@@ -6,7 +6,7 @@
 
 ## 演示
 
-[![演示视频](https://img.youtube.com/vi/dqhfPr7ODTU/maxresdefault.jpg)]([https://vimeo.com/视频ID](https://youtu.be/dqhfPr7ODTU))
+[![视频预览 - 请点击观看](https://img.youtube.com/vi/dqhfPr7ODTU/maxresdefault.jpg)](https://youtu.be/dqhfPr7ODTU)
 
 ## 项目截图
 
