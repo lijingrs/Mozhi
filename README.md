@@ -6,6 +6,8 @@
 
 ## 演示
 
+[<video src="https://youtu.be/dqhfPr7ODTU"></video>](https://img.youtube.com/vi/dqhfPr7ODTU/maxresdefault.jpg)
+
 [![视频预览 - 请点击观看](https://img.youtube.com/vi/dqhfPr7ODTU/maxresdefault.jpg)](https://youtu.be/dqhfPr7ODTU)
 
 ## 项目截图
