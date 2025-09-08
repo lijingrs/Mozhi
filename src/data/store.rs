@@ -82,6 +82,7 @@ pub struct Store {
     pub user_prompt: Option<String>,
 }
 
+
 const MOLY_SERVER_VERSION_EXTENSION: &str = "/api/v1";
 
 impl Store {
@@ -443,6 +444,12 @@ impl Store {
             // Because MolyKit does not currently expose an API to update the clients, we'll remove and recreate the entire bot context
             // TODO(MolyKit): Find a better way to do this
             self.bot_context = None;
+        }
+    }
+    pub(crate) fn update_agents(&mut self, agents: &Vec<Agent>) {
+        for agent in agents {
+            self.chats
+                .insert_or_update_agent(agent);
         }
     }
     pub fn insert_or_update_agent(&mut self, agent: &Agent) {

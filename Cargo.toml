@@ -4,22 +4,21 @@ resolver = "2"
 members = [
     "moly-runner",
     "moly-kit",
-    "moly-mini",
     "moly-sync",
 ]
 exclude = ["packaging/before-packaging-command"]
 
 [package]
-name = "moly"
+name = "mozhi"
 version = "0.2.1"
 edition = "2024"
-rust-version = "1.85"                                                 ## required by cargo-packager
-description = "Desktop app for downloading and chatting with AI LLMs"
+rust-version = "1.89.0"  ## required by cargo-packager
+description = "Desktop AI education platform that simplifies intelligent agent development"
 
-## Rename the binary to `_moly_app` to avoid naming conflicts
+## Rename the binary to `mozhi_app` to avoid naming conflicts
 ## with the `moly` binary defined by the `moly-runner` crate.
 [[bin]]
-name = "_moly_app"
+name = "mozhi_app"
 path = "src/main.rs"
 
 
@@ -98,13 +97,13 @@ to locally run the AI models efficiently across varying hardware.
 icons = ["./packaging/app_icon128x128.png"]
 out_dir = "./dist"
 ## Note: the `moly-runner` crate binary is named `moly`,
-##       while the main `moly` crate binary is named `_moly_app`.
+##       while the main `moly` crate binary is named `mozhi_app`.
 ##       This is to avoid naming conflicts when packaging the binaries,
 ##       and also ensures that the `moly-runner` binary is the "main" binary
 ##       that gets executed when the user runs "moly" from the command line.
 binaries = [
     { path = "moly", main = true },
-    { path = "_moly_app", main = false },
+    { path = "mozhi_app", main = false },
 ]
 
 ## The below command uses cargo-metadata to determine the path of the `makepad_widgets` crate on the host build system,

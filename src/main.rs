@@ -52,6 +52,6 @@ fn main() {
             //   would unify `Send` requirements across web and native.
             // - On web, `Send` should not be required as some crates interface with
             //   `wasm_bindgen` and `JsValue` is not `Send`.
-            moly::app::app_main();
+            mozhi::app::app_main();
         })
 }

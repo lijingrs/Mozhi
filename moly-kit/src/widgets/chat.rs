@@ -1,7 +1,6 @@
 use futures::{stream::AbortHandle, StreamExt};
 use makepad_widgets::*;
 use std::cell::{Ref, RefMut};
-use std::sync::Arc;
 use utils::asynchronous::spawn;
 
 use crate::utils::asynchronous::PlatformSendStream;

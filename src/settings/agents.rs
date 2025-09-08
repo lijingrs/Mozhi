@@ -197,7 +197,9 @@ struct Agents {
     #[deref]
     view: View,
     #[rust]
-    agent_id: Option<String>,
+    agents: Vec<Agent>,
+    #[rust]
+    selected_agent_id: Option<String>,
 }
 
 impl Widget for Agents {
@@ -228,7 +230,7 @@ impl Widget for Agents {
                         }
 
                         let agent = all_agents[item_id].clone();
-                        let is_selected = self.agent_id == Some(agent.id.clone());
+                        let is_selected = self.selected_agent_id == Some(agent.id.clone());
                         item.as_agent_item()
                             .set_agent(cx, agent, is_selected);
                         item.draw_all(cx, scope);
@@ -242,6 +244,7 @@ impl Widget for Agents {
 
 impl WidgetMatchEvent for Agents {
     fn handle_actions(&mut self, cx: &mut Cx, actions: &Actions, scope: &mut Scope) {
+        let mut store = scope.data.get_mut::<Store>().unwrap();
         // Handle modal open
         if self
             .view(id!(add_agent_button))
@@ -253,15 +256,20 @@ impl WidgetMatchEvent for Agents {
         }
 
         for action in actions {
+            // 刷新列表
+            if let AgentAction::AgentRefreshList(agents) = action.cast(){
+                self.set_agents(agents.clone());
+                store.update_agents(&agents);
+                self.redraw(cx);
+            }
+
             // Handle selected Agent
-            if let ConnectionSettingsAction::AgentSelected(agent_id) = action.cast() {
-                self.agent_id = Some(agent_id);
+            if let AgentAction::AgentSelected(agent_id) = action.cast() {
+                self.selected_agent_id = Some(agent_id);
             }
 
             // Handle Debug button clicked
-            if let ConnectionSettingsAction::AgentDebugClicked(agent_name) = action.cast() {
-                // 需要从store中获取或创建正确的BotId
-                let store = scope.data.get::<Store>().unwrap();
+            if let AgentAction::AgentDebugClicked(agent_name) = action.cast() {
                 let bots= store.chats.available_bots.clone();
                 // 查询名称为当前agent的BotId
                 for (bot,provider) in bots {
@@ -280,16 +288,21 @@ impl WidgetMatchEvent for Agents {
             // Handle Agent removed
             if let AgentViewAction::AgentRemoved = action.cast() {
                 // Select another Agent
-                let store = scope.data.get::<Store>().unwrap();
                 if let Some(first_agent) = store.chats.agents.values().next() {
-                    self.agent_id = Some(first_agent.id.clone());
-                    cx.action(ConnectionSettingsAction::AgentSelected(
+                    self.selected_agent_id = Some(first_agent.id.clone());
+                    cx.action(AgentAction::AgentSelected(
                         first_agent.id.clone(),
                     ));
                 }
                 self.redraw(cx);
             }
         }
+    }
+}
+
+impl Agents {
+    pub fn set_agents(&mut self, agents: Vec<Agent>) {
+        self.agents = agents;
     }
 }
 
@@ -325,7 +338,7 @@ impl WidgetMatchEvent for AgentItem {
     fn handle_actions(&mut self, cx: &mut Cx, actions: &Actions, _scope: &mut Scope) {
         let was_item_clicked = self.view(id!(main_view)).finger_up(actions).is_some();
         if was_item_clicked {
-            cx.action(ConnectionSettingsAction::AgentSelected(
+            cx.action(AgentAction::AgentSelected(
                 self.agent.id.clone(),
             ));
         }
@@ -333,7 +346,7 @@ impl WidgetMatchEvent for AgentItem {
         // Handle Debug button click
         let was_debug_clicked = self.view(id!(debug_button)).finger_up(actions).is_some();
         if was_debug_clicked {
-            cx.action(ConnectionSettingsAction::AgentDebugClicked(
+            cx.action(AgentAction::AgentDebugClicked(
                 self.agent.agent_name.clone(),
             ));
         }
@@ -391,8 +404,9 @@ impl AgentItemRef {
 }
 
 #[derive(Clone, DefaultNone, Debug)]
-pub enum ConnectionSettingsAction {
+pub enum AgentAction {
     None,
     AgentSelected(String),
     AgentDebugClicked(String),
+    AgentRefreshList(Vec<Agent>),
 }

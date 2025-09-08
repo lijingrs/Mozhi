@@ -312,7 +312,7 @@ fn before_each_package(host_os: &str) -> std::io::Result<()> {
 /// This function effectively runs the following shell commands:
 /// ```sh
 ///    MAKEPAD_PACKAGE_DIR=../Resources  cargo build --workspace --release --features macos_bundle \
-///    && install_name_tool -add_rpath "@executable_path/../Frameworks" ./target/release/_moly_app;
+///    && install_name_tool -add_rpath "@executable_path/../Frameworks" ./target/release/mozhi_app;
 /// ```
 fn before_each_package_macos(package_format: &str, host_os: &str) -> std::io::Result<()> {
     assert!(
@@ -326,7 +326,7 @@ fn before_each_package_macos(package_format: &str, host_os: &str) -> std::io::Re
     let install_name_tool_cmd = Command::new("install_name_tool")
         .arg("-add_rpath")
         .arg("@executable_path/../Frameworks")
-        .arg("./target/release/_moly_app")
+        .arg("./target/release/mozhi_app")
         .spawn()?;
 
     let output = install_name_tool_cmd.wait_with_output()?;
@@ -365,7 +365,7 @@ fn before_each_package_appimage(package_format: &str, host_os: &str) -> std::io:
 ///
 /// This function effectively runs the following shell commands:
 /// ```sh
-///    for path in $(ldd target/release/_moly_app | awk '{print $3}'); do \
+///    for path in $(ldd target/release/mozhi_app | awk '{print $3}'); do \
 ///        basename "$/path" ; \
 ///    done \
 ///    | xargs dpkg -S 2> /dev/null | awk '{print $1}' | awk -F ':' '{print $1}' | sort | uniq > ./dist/depends_deb.txt; \
@@ -386,7 +386,7 @@ fn before_each_package_deb(package_format: &str, host_os: &str) -> std::io::Resu
     // Create Debian dependencies file by running `ldd` on the binary
     // and then running `dpkg -S` on each unique shared libraries outputted by `ldd`.
     let ldd_output = Command::new("ldd")
-        .arg("target/release/_moly_app")
+        .arg("target/release/mozhi_app")
         .output()?;
 
     let ldd_output = if ldd_output.status.success() {
@@ -523,7 +523,7 @@ fn strip_unneeded_linux_binaries(host_os: &str) -> std::io::Result<()> {
         .arg("--strip-unneeded")
         .arg("--remove-section=.comment")
         .arg("--remove-section=.note")
-        .arg("target/release/_moly_app")
+        .arg("target/release/mozhi_app")
         .arg("target/release/moly")
         .spawn()?;
 

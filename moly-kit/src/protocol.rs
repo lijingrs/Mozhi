@@ -44,6 +44,7 @@ impl From<Tool> for rmcp::model::Tool {
     fn from(tool: Tool) -> Self {
         rmcp::model::Tool {
             name: tool.name.into(),
+            title: None,
             description: tool.description.map(|d| d.into()),
             input_schema: tool.input_schema,
             output_schema: None,

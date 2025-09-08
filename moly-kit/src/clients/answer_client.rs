@@ -81,30 +81,6 @@ impl AnswerClient {
         let response= serde_json::from_str::<SvrResponse<PageResult<AnswerRecordVO>>>(&response).map_err(|err| err.to_string())?.data.ok_or("Invalid response")?;
         Ok(response)
     }
-    // 新增
-    pub async fn create_question(&self, params:&AnswerRecordVO) -> Result<AnswerRecordVO, String> {
-        let inner = self.0.read().unwrap().clone();
-        let client = inner.client.clone();
-        let response = client.post(inner.url).json(&params).send().await.map_err(|err| err.to_string())?.text().await.map_err(|err| err.to_string())?;
-        let response= serde_json::from_str::<SvrResponse<AnswerRecordVO>>(&response).map_err(|err| err.to_string())?.data.ok_or("Invalid response")?;
-        Ok(response)
-    }
-    // 更新
-    pub async fn update_question(&self, params:&AnswerRecordVO) -> Result<Option<AnswerRecordVO>, String> {
-        let inner = self.0.read().unwrap().clone();
-        let client = inner.client.clone();
-        let response = client.post(inner.url).json(&params).send().await.map_err(|err| err.to_string())?.text().await.map_err(|err| err.to_string())?;
-        let response= serde_json::from_str::<SvrResponse<Option<AnswerRecordVO>>>(&response).map_err(|err| err.to_string())?.data.ok_or("Invalid response")?;
-        Ok(response)
-    }
-    // 删除
-    pub async fn delete_question(&self) -> Result<Option<AnswerRecordVO>, String> {
-        let inner = self.0.read().unwrap().clone();
-        let client = inner.client.clone();
-        let response = client.delete(inner.url).send().await.map_err(|err| err.to_string())?.text().await.map_err(|err| err.to_string())?;
-        let response= serde_json::from_str::<SvrResponse<Option<AnswerRecordVO>>>(&response).map_err(|err| err.to_string())?.data.ok_or("Invalid response")?;
-        Ok(response)
-    }
 }
 
 

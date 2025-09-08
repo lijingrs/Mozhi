@@ -74,7 +74,7 @@ use std::{
     process::Command,
 };
 
-pub const MOLY_APP_BINARY: &str = "_moly_app";
+pub const MOLY_APP_BINARY: &str = "mozhi_app";
 
 /// The name of the wasmedge root directory.
 const WASMEDGE_ROOT_DIR_NAME: &str = {
@@ -640,7 +640,7 @@ fn get_cuda_version() -> Option<CudaVersion> {
     }
 }
 
-/// Runs the `_moly_app` binary, which must be located in the same directory as this moly-runner binary.
+/// Runs the `mozhi_app` binary, which must be located in the same directory as this moly-runner binary.
 fn run_moly() -> std::io::Result<()> {
     let current_exe = std::env::current_exe()?;
     let current_exe_dir = current_exe.parent().unwrap();

@@ -1,4 +1,4 @@
-use crate::data::bot_fetcher::{delete_agent, update_agent};
+use crate::data::bot_fetcher::{delete_agent, init_agents, update_agent};
 use crate::data::store::Store;
 use makepad_widgets::*;
 use moly_kit::agent_client::Agent;
@@ -353,6 +353,7 @@ impl WidgetMatchEvent for AgentView {
                 .set_active(cx, true);
             update_agent(self.agent.clone());
             // Update the UI
+
             store.insert_or_update_agent(&self.agent);
             self.redraw(cx);
         }
@@ -361,7 +362,6 @@ impl WidgetMatchEvent for AgentView {
         if let Some(_fe) = self.view(id!(refresh_button)).finger_up(actions) {
             // Update the agent status in the store
             store.insert_or_update_agent(&self.agent);
-
             // Update UI
             self.redraw(cx);
         }

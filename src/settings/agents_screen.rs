@@ -1,8 +1,8 @@
 use crate::data::store::Store;
 use crate::settings::agent_view::AgentViewWidgetExt;
-use crate::settings::agents::ConnectionSettingsAction;
+use crate::settings::agents::AgentAction;
 use makepad_widgets::*;
-use moly_kit::agent_client::Agent;
+use crate::data::bot_fetcher::init_agents;
 
 live_design! {
     use link::theme::*;
@@ -75,7 +75,7 @@ pub struct AgentScreen {
     #[deref]
     view: View,
     #[rust]
-    agents: Vec<Agent>,
+    initialized: bool,
 }
 
 impl Widget for AgentScreen {
@@ -93,9 +93,13 @@ impl WidgetMatchEvent for AgentScreen {
     fn handle_actions(&mut self, cx: &mut Cx, actions: &Actions, scope: &mut Scope) {
         let stack_navigation = self.stack_navigation(id!(navigation));
         stack_navigation.handle_stack_view_actions(cx, actions);
-
+        if !self.initialized{
+            error!("初始化Agents");
+            self.init_agents();
+            self.initialized = true;
+        }
         for action in actions {
-            if let ConnectionSettingsAction::AgentSelected(agent_id) = action.cast() {
+            if let AgentAction::AgentSelected(agent_id) = action.cast() {
                 // fetch agent from store
                 let agent = scope
                     .data
@@ -113,5 +117,13 @@ impl WidgetMatchEvent for AgentScreen {
                 }
             }
         }
+    }
+}
+
+impl AgentScreen {
+    pub fn init_agents(&self) {
+        tokio::spawn(async move {
+            init_agents().await
+        });
     }
 }

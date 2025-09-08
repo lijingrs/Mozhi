@@ -4,6 +4,7 @@ use crate::shared::actions::ChatAction;
 use makepad_widgets::*;
 use moly_kit::answer_client::{AnswerClient, AnswerRecordVO, LearnRecordSearch};
 use moly_kit::{PageRequest, PageResult};
+use crate::shared::action_notification_popup::ActionNotificationPopupAction;
 
 live_design! {
     use link::theme::*;
@@ -546,7 +547,7 @@ impl WidgetMatchEvent for AnswerItem {
             let agent_name = "error_analyzer";
             for (bot,provider) in bots {
                 if provider.name == agent_name{
-                    store.user_prompt = Some(format!("对当前作答数据进行错因分析，<answer_id>{}<answer_id>",self.id));
+                    store.user_prompt = Some(format!("对当前作答数据进行错因分析，<answer_id>{}</answer_id>",self.id));
                     cx.action(ChatAction::Start(bot));
                     break;
                 }
@@ -777,7 +778,7 @@ impl ErrorNotebookApp {
                 question_id: "Q001".to_string(),
                 subject: "数学".to_string(),
                 question_type: "选择题".to_string(),
-                k_names: vec!["一元二次方程".to_string()],
+                k_names: vec!["一元二次方程(默认示例数据，请勿操作！)".to_string()],
                 create_time: "2025-09-01".to_string(),
                 user_answer: "A".to_string(),
                 correct_result: "错误".to_string(),
@@ -909,8 +910,8 @@ impl ErrorNotebookApp {
                     error!("检索返回:{:?}",result);
                     Cx::post_action(ErrorNotebookAppAction::RefreshList(result))
                 }
-                Err(_) => {
-                    error!("搜索失败");
+                Err(err) => {
+                    Cx::post_action(ActionNotificationPopupAction::Fail(format!("检索失败:{err}")))
                 }
             }
         });

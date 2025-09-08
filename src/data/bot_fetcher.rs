@@ -1,12 +1,13 @@
 use super::providers::{Provider, ProviderBot, ProviderFetchModelsResult, ProviderType};
 use crate::data::providers::ProviderID;
 use crate::settings::agent_view::AgentViewAction::AgentRemoved;
-use crate::settings::agents::SERVER_HOST;
+use crate::settings::agents::{AgentAction, SERVER_HOST};
 use crate::shared::action_notification_popup::ActionNotificationPopupAction;
 use makepad_widgets::{error, Cx};
 use moly_kit::agent_client::{Agent, AgentServerClient};
 use moly_kit::kb_server::{KnowledgeBase, KnowledgeBaseServerClient};
 use moly_kit::{protocol::*, utils::asynchronous::spawn};
+use crate::settings::agents::AgentAction::AgentRefreshList;
 
 /// Fetches models for a provider using the appropriate MolyKit client
 pub fn fetch_models_for_provider(provider: &Provider) {
@@ -103,10 +104,12 @@ pub async fn init_agents() -> Vec<Agent>{
     let client = AgentServerClient::new(format!("{}/{}",SERVER_HOST,"api/agent/fetch"));
     match client.fetch_agents().await {
         Ok(agents) => {
+            Cx::post_action(AgentAction::AgentRefreshList(agents.clone()));
             agents
         }
         Err(errors) => {
             error!("初始化Agent失败{}", errors);
+            Cx::post_action(ActionNotificationPopupAction::Fail(errors));
             vec![]
         }
     }
@@ -193,6 +196,10 @@ pub fn delete_agent(agent: String){
         let delete_agent = client.delete_agent().await;
         match delete_agent {
             Ok(_) => {
+                tokio::spawn(async move{
+                   let agents = init_agents().await;
+                    Cx::post_action(AgentRefreshList(agents));
+                });
                 Cx::post_action(AgentRemoved);
                 Cx::post_action(ActionNotificationPopupAction::Success("删除成功".to_string()))
             }
