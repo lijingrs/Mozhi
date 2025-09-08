@@ -21,6 +21,13 @@
 #### 智慧题库
 <img width="2872" height="1622" alt="image" src="https://github.com/user-attachments/assets/524057f7-7c0d-4712-bc3b-20badfb75213" />
 
+## 功能规划
 
+- 提示词备份
+- 全题型题目录入支持含图片、公式
+- 全题型渲染含公式
+- 手动、自动组卷
+- 交互式答题器
+- AI阅卷
 
 
