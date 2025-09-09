@@ -1,5 +1,5 @@
 use crate::data::store::Store;
-use crate::settings::agents::SERVER_HOST;
+use crate::agent::agents::SERVER_HOST;
 use crate::shared::actions::ChatAction;
 use makepad_widgets::*;
 use moly_kit::knowledge_client::{KnowledgeClient, KnowledgeSearch, KnowledgeVo};

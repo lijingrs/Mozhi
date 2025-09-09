@@ -24,9 +24,8 @@ use makepad_widgets::*;
 use moly_kit::agent_client::Agent;
 use moly_kit::kb_server::KnowledgeBase;
 use moly_kit::*;
-
 #[allow(dead_code)]
-const DEFAULT_MOFA_ADDRESS: &str = "http://localhost:8000";
+const DEFAULT_SERVER_ADDRESS: &str = "http://localhost:8080";
 
 #[derive(Clone, DefaultNone, Debug)]
 pub enum StoreAction {

@@ -29,6 +29,42 @@ pub struct Agent {
     #[serde(default)]
     pub enabled:bool,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize,Default)]
+pub struct AgentHistoryVO {
+    /// 记录ID，SurrealDB自动生成
+    pub id: String,
+    pub agent_id: String,
+    /// API_BASE
+    pub api_base: String,
+
+    /// API_KEY
+    pub api_key: String,
+
+    /// 模型名称
+    pub app_name: String,
+
+    /// 创建时间
+    pub create_time: String,
+
+    /// 场景名称
+    pub model_name: String,
+
+    /// 场景唯一标识码
+    pub agent_code: String,
+
+    /// 业务场景排序
+    pub agent_order: i32,
+
+    /// 场景启用状态: 1启用 0停用
+    pub agent_status: i32,
+
+    /// 系统提示语内容
+    pub system_prompt: String,
+    
+    pub is_current: bool,
+}
+
 impl From<AgentServerClientInner> for AgentServerClient {
     fn from(inner: AgentServerClientInner) -> Self {
         Self(Arc::new(RwLock::new(inner)))

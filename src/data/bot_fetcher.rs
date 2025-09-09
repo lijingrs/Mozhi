@@ -1,13 +1,13 @@
 use super::providers::{Provider, ProviderBot, ProviderFetchModelsResult, ProviderType};
 use crate::data::providers::ProviderID;
-use crate::settings::agent_view::AgentViewAction::AgentRemoved;
-use crate::settings::agents::{AgentAction, SERVER_HOST};
+use crate::agent::agent_view::AgentViewAction::AgentRemoved;
+use crate::agent::agents::{AgentAction, SERVER_HOST};
 use crate::shared::action_notification_popup::ActionNotificationPopupAction;
 use makepad_widgets::{error, Cx};
 use moly_kit::agent_client::{Agent, AgentServerClient};
 use moly_kit::kb_server::{KnowledgeBase, KnowledgeBaseServerClient};
 use moly_kit::{protocol::*, utils::asynchronous::spawn};
-use crate::settings::agents::AgentAction::AgentRefreshList;
+use crate::agent::agents::AgentAction::AgentRefreshList;
 
 /// Fetches models for a provider using the appropriate MolyKit client
 pub fn fetch_models_for_provider(provider: &Provider) {

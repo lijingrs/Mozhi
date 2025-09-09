@@ -11,3 +11,4 @@ mod my_models;
 mod settings;
 mod shared;
 pub mod applications;
+pub mod agent;

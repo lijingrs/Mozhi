@@ -43,7 +43,7 @@ pub struct PageRequest<T> {
     pub params: Option<T>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug,Default)]
 pub struct PageResult<T> {
     pub data: Vec<T>,
     pub total_count: usize,

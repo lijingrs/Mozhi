@@ -33,7 +33,7 @@ live_design! {
 
     use crate::landing::model_card::ModelCardViewAllModal;
     use crate::chat::chat_screen::ChatScreen;
-    use crate::settings::agents_screen::AgentScreen;
+    use crate::agent::agents_screen::AgentScreen;
     use crate::settings::app_center_screen::AppCenterScreen;
     use crate::settings::knowledge_base_screen::KnowledgeBaseScreen;
     use crate::settings::providers_screen::ProvidersScreen;
@@ -263,6 +263,7 @@ impl LiveRegister for App {
         crate::settings::live_design(cx);
         crate::applications::live_design(cx);
         crate::mcp::live_design(cx);
+        crate::agent::live_design(cx);
     }
 }
 

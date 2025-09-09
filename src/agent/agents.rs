@@ -1,6 +1,6 @@
 use crate::data::store::Store;
-use crate::settings::add_agent_modal::AddAgentModalAction;
-use crate::settings::agent_view::AgentViewAction;
+use crate::agent::add_agent_modal::AddAgentModalAction;
+use crate::agent::agent_view::AgentViewAction;
 use crate::shared::actions::ChatAction;
 use crate::shared::modal::ModalWidgetExt;
 use makepad_widgets::*;
@@ -14,28 +14,8 @@ live_design! {
 
     use crate::shared::widgets::*;
     use crate::shared::styles::*;
-    use crate::settings::add_agent_modal::*;
+    use crate::agent::add_agent_modal::*;
     use crate::shared::modal::*;
-
-    ICON_EDIT = dep("crate://self/resources/icons/edit.svg")
-    ICON_TRASH = dep("crate://self/resources/images/trash_icon.png")
-    ICON_REMOTE = dep("crate://self/resources/images/globe_icon.png")
-    ICON_LOCAL = dep("crate://self/resources/images/laptop_icon.png")
-    ICON_SETTINGS = dep("crate://self/resources/images/settings_icon.png")
-
-    ICON_SUCCESS = dep("crate://self/resources/images/circle_check_icon.png")
-    ICON_LOADER = dep("crate://self/resources/images/loader_icon.png")
-    ICON_FAILURE = dep("crate://self/resources/images/refresh_error_icon.png")
-
-    // Agent icons
-    ICON_OPENAI = dep("crate://self/resources/images/agents/openai.png")
-    ICON_AGENT = dep("crate://self/resources/images/agents/agent.png")
-    ICON_GEMINI = dep("crate://self/resources/images/agents/gemini.png")
-    ICON_SILICONFLOW = dep("crate://self/resources/images/agents/siliconflow.png")
-    ICON_OPENROUTER = dep("crate://self/resources/images/agents/openrouter.png")
-    ICON_DEEPSEEK = dep("crate://self/resources/images/agents/deepseek.png")
-    ICON_OLLAMA = dep("crate://self/resources/images/agents/ollama.png")
-    ICON_ANTHROPIC = dep("crate://self/resources/images/agents/anthropic.png")
 
     // Not making this based on <Icon> because button does not support images
     // (and these SVGs are too complex for Makepad's SVG support)
@@ -244,7 +224,7 @@ impl Widget for Agents {
 
 impl WidgetMatchEvent for Agents {
     fn handle_actions(&mut self, cx: &mut Cx, actions: &Actions, scope: &mut Scope) {
-        let mut store = scope.data.get_mut::<Store>().unwrap();
+        let store = scope.data.get_mut::<Store>().unwrap();
         // Handle modal open
         if self
             .view(id!(add_agent_button))

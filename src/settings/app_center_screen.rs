@@ -3,7 +3,7 @@ use crate::applications::error_notebook_app::ErrorNotebookAppAction;
 use crate::applications::knowledge_graph_app::KnowledgeGraphAppAction;
 use crate::applications::learn_record_app::LearnRecordAppAction;
 use crate::applications::QuestionAppAction;
-use crate::settings::agents::SERVER_HOST;
+use crate::agent::agents::SERVER_HOST;
 use crate::shared::action_notification_popup::ActionNotificationPopupAction;
 use makepad_widgets::*;
 use moly_kit::answer_client::AnswerClient;

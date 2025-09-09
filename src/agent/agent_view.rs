@@ -1,4 +1,4 @@
-use crate::data::bot_fetcher::{delete_agent, init_agents, update_agent};
+use crate::data::bot_fetcher::{delete_agent, update_agent};
 use crate::data::store::Store;
 use makepad_widgets::*;
 use moly_kit::agent_client::Agent;
@@ -13,6 +13,7 @@ live_design! {
     use crate::shared::styles::*;
 
     REFRESH_ICON = dep("crate://self/resources/images/refresh_icon.png")
+    HISTORY_ICON = dep("crate://self/resources/images/history.png")
 
     FormGroup = <View> {
         flow: Down
@@ -62,6 +63,15 @@ live_design! {
                         icon = <Image> {
                             width: 22, height: 22
                             source: (REFRESH_ICON)
+                        }
+                    }
+                    history_button = <View> {
+                        cursor: Hand
+                        padding: {top: 4}
+                        width: 30, height: 30
+                        icon = <Image> {
+                            width: 22, height: 22
+                            source: (HISTORY_ICON)
                         }
                     }
                     agent_enabled_switch = <MolySwitch> {
@@ -237,7 +247,7 @@ impl Widget for AgentView {
     }
 
     fn draw_walk(&mut self, cx: &mut Cx2d, scope: &mut Scope, walk: Walk) -> DrawStep {
-        let store = scope.data.get_mut::<Store>().unwrap();
+        let _store = scope.data.get_mut::<Store>().unwrap();
         let agent = self.agent.clone();
         if self.agent.enabled {
             self.view(id!(refresh_button)).set_visible(cx, true);
@@ -352,8 +362,8 @@ impl WidgetMatchEvent for AgentView {
             self.check_box(id!(agent_enabled_switch))
                 .set_active(cx, true);
             update_agent(self.agent.clone());
+            
             // Update the UI
-
             store.insert_or_update_agent(&self.agent);
             self.redraw(cx);
         }
@@ -364,6 +374,15 @@ impl WidgetMatchEvent for AgentView {
             store.insert_or_update_agent(&self.agent);
             // Update UI
             self.redraw(cx);
+        }
+
+        // Handle history button
+        if let Some(_fe) = self.view(id!(history_button)).finger_up(actions) {
+            // 异步获取历史记录后渲染
+            cx.action(AgentViewAction::ShowHistoryClicked(
+                self.agent.id.clone(),
+                self.agent.app_name.clone()
+            ));
         }
 
         // Handle remove agent button
@@ -420,6 +439,7 @@ pub enum AgentViewAction {
     None,
     AgentRemoved,
     AgentAdded(Agent),
+    ShowHistoryClicked(String, String),
 }
 
 #[derive(Clone, Debug, DefaultNone)]

@@ -1,6 +1,8 @@
 use crate::data::store::Store;
-use crate::settings::agent_view::AgentViewWidgetExt;
-use crate::settings::agents::AgentAction;
+use crate::agent::agent_view::AgentViewWidgetExt;
+use crate::agent::agent_view::AgentViewAction;
+use crate::agent::agents::AgentAction;
+use crate::agent::prompt_history_screen::PromptHistoryScreenWidgetExt;
 use makepad_widgets::*;
 use crate::data::bot_fetcher::init_agents;
 
@@ -13,8 +15,9 @@ live_design! {
     use crate::shared::widgets::*;
     use crate::shared::modal::*;
     use crate::settings::configure_connection_modal::ConfigureConnectionModal;
-    use crate::settings::agent_view::AgentView;
-    use crate::settings::agents::Agents;
+    use crate::agent::agent_view::AgentView;
+    use crate::agent::agents::Agents;
+    use crate::agent::prompt_history_screen::PromptHistoryScreen;
 
     HorizontalSeparator = <RoundedView> {
         width: 2, height: Fill
@@ -67,6 +70,8 @@ live_design! {
                 }
             }
         }
+
+        prompt_history_screen = <PromptHistoryScreen> {}
     }
 }
 
@@ -115,6 +120,12 @@ impl WidgetMatchEvent for AgentScreen {
                 } else {
                     eprintln!("Agent not found: {}", agent_id);
                 }
+            }
+            
+            if let AgentViewAction::ShowHistoryClicked(agent_id, agent_name) = action.cast() {
+                self.view
+                    .prompt_history_screen(id!(prompt_history_screen))
+                    .set_agent(cx, &agent_id, &agent_name);
             }
         }
     }
