@@ -22,10 +22,10 @@
 <img width="2872" height="1622" alt="image" src="https://github.com/user-attachments/assets/524057f7-7c0d-4712-bc3b-20badfb75213" />
 
 ## 功能规划
-
+- Agent管理（已完成）
 - 提示词备份 (已完成)
-- 日志
-- 监测
+- Agent日志（开发中）
+- 监测 (开发中)
 - 全题型题目录入支持含图片、公式
 - 全题型渲染含公式
 - 手动、自动组卷
