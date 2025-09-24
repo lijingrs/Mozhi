@@ -13,8 +13,10 @@
 ### Agent管理
 
 <img width="2872" height="1622" alt="image" src="https://github.com/user-attachments/assets/5f21545f-7374-406f-bb66-1c7e145386b5" />
+
 #### 自定义参数
 <img width="2872" height="1638" alt="image" src="https://github.com/user-attachments/assets/9ef97c1f-3686-4053-a12b-e22786492b14" />
+
 #### 历史记录
 <img width="2872" height="1638" alt="image" src="https://github.com/user-attachments/assets/36b99e16-84b3-4276-8253-d4cd02a5b3f5" />
 
