@@ -28,7 +28,7 @@ GUI：
 > react版： https://github.com/aios-rs/agent-pilot
 > server:  https://github.com/aios-rs/agentos
 
-> 请勿从源码构建当前项目，查看release页面选择最新的安装包体验！
+> 项目正在重构，请勿从源码构建当前项目，查看release页面选择最新的安装包体验！
 
 **基于moly二次开发。**
 
