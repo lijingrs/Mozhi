@@ -24,7 +24,7 @@ GUI：
 2025-11-24 增加用户登录功能，满足当前阶段调式接口需要用户凭证的需求。
 ## **项目介绍**
 
-墨智是一款集智能体管理、开发、测试与应用于一体的智能平台，致力于打造面向AIOS的Agent应用生态。
+aimos是一款集智能体管理、开发、测试与应用于一体的智能平台，致力于打造面向AIOS的Agent应用生态。
 
 > react版： https://github.com/aios-rs/agent-pilot
 > server:  https://github.com/aios-rs/agentos
