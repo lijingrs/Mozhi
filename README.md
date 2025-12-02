@@ -26,8 +26,8 @@ GUI：
 
 aimos是一款集智能体管理、开发、测试与应用于一体的智能平台，致力于打造面向AIOS的Agent应用生态。
 
-> react版： https://github.com/aios-rs/agent-pilot
-> server:  https://github.com/aios-rs/agentos
+> react版： https://github.com/aios-rs/aimos-react
+> server:  https://github.com/aios-rs/aimos-server
 
 > 项目正在重构，请勿从源码构建当前项目，查看release页面选择最新的安装包体验！
 
